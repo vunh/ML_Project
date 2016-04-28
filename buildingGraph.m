@@ -1,4 +1,4 @@
-function sim_graph = buildingGraph (frames, global_spid_map, supixel)
+function sim_graph = buildingGraph (frames, global_spid_map, supixel, op_flow)
 
 %% Params
 weight_aba = 0.5;
@@ -51,7 +51,7 @@ for iFrame = 1:nFrame
         spatio_temporal_appearance_interframe...
                     (supixel(iFrame).spmap, supixel(iFrame+1).spmap,...
                     median_list1, median_list2, histogram_list1, histogram_list2,...
-                    optical_flow, global_spid_map, iFrame)
+                    op_flow(iFrame), global_spid_map, iFrame)
     end
 end
 

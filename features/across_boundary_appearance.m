@@ -6,6 +6,6 @@ function sim = across_boundary_appearance(spmap, edgemap)
 
 aff = spAffinities(spmap, edgemap);
 
-sim = 1/(1 + exp(aff));
+sim = 1./(1 + exp(aff));
 
 end

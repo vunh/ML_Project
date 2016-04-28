@@ -1,5 +1,8 @@
 function aff = spAffinities(imseg, imedge)
 
+added_edge_eps = 0.01;
+imedge = imedge + added_edge_eps; 
+
 height = size(imseg, 1);
 width = size(imseg, 2);
 imgsize = [height, width];
@@ -59,6 +62,6 @@ end
 weight(weight == 0) = 1;
 aff = aff ./ weight;
 aff(aff == 0) = Inf;
-aff(1:(maxSuperpixelId+1):end) = 0;
+%aff(1:(maxSuperpixelId+1):end) = 0;
 
 end

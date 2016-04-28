@@ -4,10 +4,9 @@ function spatio_temporal_appearance_interframe...
     optical_flow, global_spid_map, iFrame)
 
 no_sp1 = size(median_list1, 1);
-no_sp2 = size(median_list2, 1);
 
-of_u_arr = optical_flow(:,:,1); of_u_arr = of_u_arr(:);
-of_v_arr = optical_flow(:,:,2); of_v_arr = of_v_arr(:);
+of_u_arr = optical_flow.u; of_u_arr = of_u_arr(:);
+of_v_arr = optical_flow.v; of_v_arr = of_v_arr(:);
 
 for i = 1:no_sp1
     % Compute median optical flow
