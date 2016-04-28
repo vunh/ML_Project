@@ -8,8 +8,9 @@ function [lab_sim_graph, hist_sim_graph] = spatio_temporal_appearance_intraframe
 lambda_sta = 0.5;
 lambda_sta_2 = 0.5;
 
-lab_sim_graph = zeros(size(global_spid_map,2));
-hist_sim_graph = zeros(size(global_spid_map,2));
+n_global_sp = max(global_spid_map(:));
+lab_sim_graph = sparse(n_global_sp, n_global_sp);
+hist_sim_graph = sparse(n_global_sp, n_global_sp);
 
 % Computing similarities for pairs
 for iPair = 1:length(sp_pairs)

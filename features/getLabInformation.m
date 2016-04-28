@@ -5,7 +5,7 @@ function [median_list, histogram_list] = getLabInformation (spmap, lab_img)
 
 nbins = 32;
 
-max_sp_ids = unique(spmap);
+max_sp_ids = length(unique(spmap));
 median_list = zeros(max_sp_ids, 3);
 histogram_list = zeros(max_sp_ids, nbins, 3);
 l_arr = lab_img(:,:,1);  l_arr = l_arr(:);
