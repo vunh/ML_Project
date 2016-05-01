@@ -7,7 +7,7 @@ addpath(genpath(pwd));
 addpath(genpath('/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/Ncut_9'));
 
 % Params
-video_name = 'girl';
+video_name = 'frog';
 
 % Auxiliary params
 ext = '.png';
@@ -49,7 +49,7 @@ end
 
 
 % Build graph topology
-graph_topo_file = fullfile(working_dir, 'graph_topo.mat');
+graph_topo_file = fullfile(working_dir, ['graph_topo_' video_name '.mat']);
 if (exist(graph_topo_file, 'file') == 2)
     load (graph_topo_file);
 else
@@ -59,7 +59,7 @@ end
 
 graph = sparse(n_sp, n_sp);
 % Feed features to the graph
-feature_file = fullfile(working_dir, 'features.mat');
+feature_file = fullfile(working_dir, ['features_' video_name '.mat']);
 if (exist(feature_file, 'file') == 2)
     load (feature_file);
 end

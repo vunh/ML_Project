@@ -2,9 +2,9 @@ function extractSuperpixels_Dataset()
 
 
 
-dataset_dir = '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/dataset/SegTrackv2/PNG_Std';
-intermediate_dir = '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/superpixel_SegTrack_v2';
-ext = '.png';
+dataset_dir = '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/dataset/vsb100/General_traindense_halfres/Images';
+intermediate_dir = '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/superpixel_vsb100_traindensehalf';
+ext = '.jpg';
 size = [];
 
 
@@ -31,7 +31,9 @@ parfor k = 1 : length(dir_list)
     img_list = {img_list.name};
     img_list_num = [];
     for iImg = 1:length(img_list)
-        [~, img_name, ~] = fileparts(img_list{iImg});
+        full_img_name = img_list{iImg};
+        full_img_name = full_img_name(1, findFirstNumberId(full_img_name):end);
+        [~, img_name, ~] = fileparts(full_img_name);
         img_list_num = [img_list_num; str2num(img_name)];
     end
     [~, index] = sort(img_list_num);
@@ -42,5 +44,16 @@ parfor k = 1 : length(dir_list)
 end
 
 delete(poolobj);
+
+end
+
+function id = findFirstNumberId(str)
+id = 0;
+for i = 1:length(str)
+    if (str(i) >= '0' && str(i) <= '9')
+        id = i;
+        break;
+    end
+end
 
 end

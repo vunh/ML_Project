@@ -2,11 +2,11 @@ function extractOpticalFlowv_Dataset()
 
 addpath(genpath('/home/vhnguyen/code/ml_proj/code/flow_code_v2'));
 
-dataset_dir = '/home/vhnguyen/dataset/SegTrackv2/PNG_Std';
-output_dir = '/home/vhnguyen/code/ml_proj/code/output/opticalflow_SegTrack_v2';
-ext = '.png';
+dataset_dir = '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/dataset/vsb100/General_traindense_halfres/Images';
+output_dir = '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/opticalflow_vsb100_traindensehalf';
+ext = '.jpg';
 
-poolobj = parpool('local',6);
+poolobj = parpool('local',2);
 
 % Get a list of all files and folders in this folder.
 files = dir(dataset_dir)
