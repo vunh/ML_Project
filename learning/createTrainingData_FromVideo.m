@@ -2,9 +2,13 @@ function createTrainingData_FromVideo()
 
 video_path = '';
 anno_path = '';
+res_dir = '';
 
-pos_samples = [];
-neg_samples = [];
+
+pos_samples_intra = [];
+neg_samples_intra = [];
+pos_samples_inter = [];
+neg_samples_inter = [];
 
 files = dir(video_path);
 files = {files.name};
@@ -20,23 +24,78 @@ aff_stm = addFeature_SpatioTemporalMotion ...
 
 % Compare with groundtruth
 groundtruth = groundTruth{1,end}.Segmentation;
-for i = 1:length(intra_graph)
+for iSubGraph = 1:length(intra_graph)
+    subSPMap = spmap{iSubGraph};
+    gt_frame = gtmap{iSubGraph};
     
+    % Features on this frame
+    sub_aba;
+    sub_sta;
+    sub_stm;
+    
+    
+    % For each pair of superpixels
+    tril_connect1 = tril(intra_graph{iSubGraph});
+    [sp_list_a, sp_list_b] = find(tril_connect1 ~= 0);
+    for iPair = 1:size(sp_list_a, 1)
+        id_seg_a = getMostOverlapSegment((subSPMap==sp_list_a(iPair)), gt_frame);
+        id_seg_b = getMostOverlapSegment((subSPMap==sp_list_b(iPair)), gt_frame);
+        added_sample = [sub_aba(sp_list_a(iPair), sp_list_b(iPair));...
+                        sub_sta(sp_list_a(iPair), sp_list_b(iPair));...
+                        sub_stm(sp_list_a(iPair), sp_list_b(iPair))];
+        if (id_seg_a == id_seg_b)
+            pos_samples_intra = [pos_samples_intra added_sample];
+        else
+            neg_samples_intra = [neg_samples_intra added_sample];
+        end
+    end
 end
 
 for i = 1:length(inter_graph)
+    subSPMap1 = spmap{iSubGraph};
+    subSPMap2 = spmap{iSubGraph+1};
+    gt_frame1 = gtmap{iSubGraph};
+    gt_frame2 = gtmap{iSubGraph+1};
+    
+    % Feature on this pair of frames
+    sub_sta;
+    sub_stm;
+    
+    
+    tril_connect = tril(inter_graph{iSubGraph});
+    [sp_list_a, sp_list_b] = find(tril_connect ~= 0);
+    for iPair = 1:size(sp_list_a, 1)
+        id_seg_a = getMostOverlapSegment((subSPMap1==sp_list_a(iPair)), gt_frame1);
+        id_seg_b = getMostOverlapSegment((subSPMap2==sp_list_b(iPair)), gt_frame2);
+        added_sample = [sub_sta(sp_list_a(iPair), sp_list_b(iPair));...
+                        sub_stm(sp_list_a(iPair), sp_list_b(iPair))];
+        if (id_seg_a == id_seg_b)
+            pos_samples_inter = [pos_samples_inter added_sample];
+        else
+            neg_samples_inter = [neg_samples_inter added_sample];
+        end
+    end
 end
+
+
+% Write to result file
+if (video_path(end) == '/')
+    video_path(end) = [];
+end
+[~,video_name,~] =fileparts(video_path);
+save(fullfile(res_dir, [video_name '.mat']),...
+    'pos_samples_intra', 'neg_samples_intra', 'pos_samples_inter', 'neg_samples_inter');
 
 end
 
-function segment_id = getMostOverlapSegment(superpixel_mask, gt)
+function segment_id = getMostOverlapSegment(superpixel_mask, gt_frame)
 
 % Param
-area_ratio_threshold = 0.6;
+area_ratio_threshold = 0.7;
 
 segment_id = 0;
 
-overlap_gt = gt(logical(superpixel_mask));
+overlap_gt = gt_frame(logical(superpixel_mask));
 seg_list = unique(overlap_gt);
 max_seg_id = 0;
 max_seg_area = 0;
