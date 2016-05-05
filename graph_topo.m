@@ -18,11 +18,18 @@ for iFrame = 1:n_frame
     
     aff_aba = across_boundary_appearance(uint16(spmap), ones(size(spmap)));
     sub_intra_graph = zeros(no_sp, no_sp);
+%     for i = 1:no_sp
+%         sub_intra_graph(i, i) = 1;
+%         for j = i+1:no_sp
+%             sub_intra_graph(i, j) = aff_aba(i,j);
+%             sub_intra_graph(j, i) = sub_intra_graph(i, j);
+%         end
+%     end
+    
     for i = 1:no_sp
-        sub_intra_graph(i, i) = 1;
-        for j = i+1:no_sp
-            sub_intra_graph(i, j) = aff_aba(i,j);
-            sub_intra_graph(j, i) = sub_intra_graph(i, j);
+        for j = 1:no_sp
+            sub_intra_graph(i,j) = aff_aba(i,j);
+            sub_intra_graph(j,i) = aff_aba(j,i);
         end
     end
     
@@ -42,7 +49,7 @@ for iFrame = 1:(length(sp_map)-1)
     no_sp1 = length(unique(spmap1));
     no_sp2 = length(unique(spmap2));
     
-    sub_inter_graph = zeros(length(no_sp1), length(no_sp2));
+    sub_inter_graph = zeros(no_sp1, no_sp2);
     
     u_of = op_flow(iFrame).u; u_of = u_of(:);
     v_of = op_flow(iFrame).v; v_of = v_of(:);
@@ -62,6 +69,7 @@ for iFrame = 1:(length(sp_map)-1)
         
         % Put the shifted mask to the next frame
         intersect = spmap2(logical(shifted_mask1));
+        %intersect = spmap2 .* uint32(shifted_mask1);
         npx_intersect = length(intersect(:));
         sp_list = unique(intersect);
         for i = 1:length(sp_list)

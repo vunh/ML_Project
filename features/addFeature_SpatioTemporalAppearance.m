@@ -1,9 +1,12 @@
-function [graph, feature_intra, feature_inter] = addFeature_SpatioTemporalAppearance ...
-    (frames, spmap, global_spid_map, input_graph, intragraph, intergraph, option)
+function [graph, feature_intra_sim, feature_intra_hist, feature_inter_sim, feature_inter_hist]...
+    = addFeature_SpatioTemporalAppearance ...
+    (frames, spmap, global_spid_map, input_graph, intragraph, intergraph)
 
 graph = sparse(size(input_graph, 1), size(input_graph, 1));
-feature_intra = cell(length(intragraph), 1);
-feature_inter = cell(length(intergraph), 1);
+feature_intra_sim = cell(length(intragraph), 1);
+feature_inter_sim = cell(length(intergraph), 1);
+feature_intra_hist = cell(length(intragraph), 1);
+feature_inter_hist = cell(length(intergraph), 1);
 
 for iSubGraph = 1:length(intragraph)
     tril_connect1 = tril(intragraph{iSubGraph});
@@ -13,11 +16,12 @@ for iSubGraph = 1:length(intragraph)
     [lab_sim_graph, hist_sim_graph] = spatio_temporal_appearance_intraframe...
                 ([sp_list_a, sp_list_b], median_list1, median_list1, histogram_list1, histogram_list1,...
                 iSubGraph, iSubGraph, global_spid_map);
-	graph = graph + option.lab_sim_weight * lab_sim_graph;
-    graph = graph + option.lab_hist_weight * hist_sim_graph;
+	graph = graph + lab_sim_graph;
+    graph = graph + hist_sim_graph;
     
     if (nargout > 1)
-        feature_intra(iSubGraph, 1) = {option.lab_sim_weight * lab_sim_graph + option.lab_hist_weight * hist_sim_graph};
+        feature_intra_sim(iSubGraph, 1) = {lab_sim_graph};
+        feature_intra_hist(iSubGraph, 1) = {hist_sim_graph};
     end
     
 end
@@ -32,11 +36,12 @@ for iSubGraph = 1:length(intergraph)
                 iSubGraph, (iSubGraph+1), global_spid_map);
             
             
-	graph = graph + option.lab_sim_weight * lab_sim_graph;
-    graph = graph + option.lab_hist_weight * hist_sim_graph;
+	graph = graph + lab_sim_graph;
+    graph = graph + hist_sim_graph;
     
     if (nargout > 1)
-        feature_inter(iSubGraph, 1) = {option.lab_sim_weight * lab_sim_graph + option.lab_hist_weight * hist_sim_graph};
+        feature_inter_sim(iSubGraph, 1) = {lab_sim_graph};
+        feature_inter_hist(iSubGraph, 1) = {hist_sim_graph};
     end
 end
 
