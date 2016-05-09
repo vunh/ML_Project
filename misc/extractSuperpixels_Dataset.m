@@ -16,9 +16,9 @@ dirFlags = [files.isdir];
 dir_list = files(dirFlags);
 % Print folder names to command window.
 
-poolobj = parpool('local',2);
+%poolobj = parpool('local',2);
 
-parfor k = 1 : length(dir_list)
+for k = 1 : length(dir_list)
 	dir_name = dir_list(k).name;
     dir_path = fullfile(dataset_dir, dir_name);
     
@@ -43,7 +43,7 @@ parfor k = 1 : length(dir_list)
     superpixelVideo(dir_path, intermediate_dir, img_list, size);
 end
 
-delete(poolobj);
+%delete(poolobj);
 
 end
 

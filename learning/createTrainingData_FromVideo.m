@@ -1,4 +1,4 @@
-function createTrainingData_FromVideo()
+function createTrainingData_FromVideo(video_name)
 
 % Param
 groundTruth_level = 4;
@@ -6,19 +6,24 @@ groundTruth_level = 4;
 addpath(genpath('../'));
 
 % Directories
-video_path =        '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/dataset/vsb100/General_traindense_halfres/Images/alec_baldwin';
-superpixel_path=    '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/superpixel_vsb100_traindensehalf/spinfo_alec_baldwin.mat';
-opticalflow_path =  '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/opticalflow_vsb100_traindensehalf/alec_baldwin.mat';
-anno_path =         '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/dataset/vsb100/General_traindense_halfres/Groundtruth/alec_baldwin';
-working_dir =       '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/generated_trainingset_vsb100/working_dir';
+video_path =        ['/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/dataset/vsb100/General_traindense_halfres/Images/' video_name];
+superpixel_path=    ['/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/superpixel_vsb100_traindensehalf/spinfo_' video_name '.mat'];
+opticalflow_path =  ['/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/opticalflow_vsb100_traindensehalf/' video_name '.mat'];
+anno_path =         ['/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/dataset/vsb100/General_traindense_halfres/Groundtruth/' video_name];
+working_dir =       ['/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/generated_trainingset_vsb100/working_dir'];
 
 res_dir = '/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/output/generated_trainingset_vsb100';
 
+% if (video_path(end) == '/')
+%     video_path(end) = [];
+% end
+% [~,video_name,~] =fileparts(video_path);
 
-pos_samples_intra = [];
-neg_samples_intra = [];
-pos_samples_inter = [];
-neg_samples_inter = [];
+
+pos_samples_intra = full([]);
+neg_samples_intra = full([]);
+pos_samples_inter = full([]);
+neg_samples_inter = full([]);
 
 segment_gt = loadGroundTruth (anno_path, groundTruth_level);
 frames = loadLabFrame (video_path, '.jpg');
@@ -56,12 +61,12 @@ for i = 1:length(sp)
     n_sp = n_sp + curr_no_sp;
 end
 
-graph_topo_file = fullfile(working_dir, 'graph_topo.mat');
+graph_topo_file = fullfile(working_dir, sprintf('graph_topo_%s.mat', video_name));
 if (exist(graph_topo_file, 'file') == 2)
-    load(graph_topo_file);
+load(graph_topo_file);
 else
-    [intra_graph, inter_graph] = graph_topo (spmap, global_spid_map, op_flow);
-    save(graph_topo_file, 'intra_graph', 'inter_graph');
+[intra_graph, inter_graph] = graph_topo (spmap, global_spid_map, op_flow);
+save(graph_topo_file, 'intra_graph', 'inter_graph');
 end
 graph = sparse(n_sp, n_sp);
 
@@ -72,7 +77,7 @@ graph = sparse(n_sp, n_sp);
 
 
 % =========================================================================
-feature_file = fullfile(working_dir, 'feature.mat');
+feature_file = fullfile(working_dir, sprintf('feature_%s.mat', video_name));
 if (exist(feature_file, 'file') == 2)
     load(feature_file);
 else
@@ -106,17 +111,17 @@ for iSubGraph = 1:(length(intra_graph)-1)
     tril_connect1 = tril(intra_graph{iSubGraph});
     [sp_list_a, sp_list_b] = find(tril_connect1 ~= 0);
     for iPair = 1:size(sp_list_a, 1)
-        id_seg_a = getMostOverlapSegment((subSPMap==sp_list_a(iPair)), gt_frame);
-        id_seg_b = getMostOverlapSegment((subSPMap==sp_list_b(iPair)), gt_frame);
+        [id_seg_a, id_hostseg_a] = getMostOverlapSegment((subSPMap==sp_list_a(iPair)), gt_frame);
+        [id_seg_b, id_hostseg_b] = getMostOverlapSegment((subSPMap==sp_list_b(iPair)), gt_frame);
         added_sample = [sub_aba(sp_list_a(iPair), sp_list_b(iPair));...
                         sub_sta_sim(sp_list_a(iPair), sp_list_b(iPair));...
                         sub_sta_hist(sp_list_a(iPair), sp_list_b(iPair));...
                         sub_stm_sim(sp_list_a(iPair), sp_list_b(iPair));...
                         sub_stm_hist(sp_list_a(iPair), sp_list_b(iPair))];
         if (id_seg_a == id_seg_b)
-            pos_samples_intra = [pos_samples_intra added_sample];
-        else
-            neg_samples_intra = [neg_samples_intra added_sample];
+            pos_samples_intra = [pos_samples_intra full(added_sample)];
+        elseif (id_hostseg_a ~= id_hostseg_b)
+            neg_samples_intra = [neg_samples_intra full(added_sample)];
         end
     end
 end
@@ -137,33 +142,31 @@ for iSubGraph = 1:(length(inter_graph)-1)
     tril_connect = tril(inter_graph{iSubGraph});
     [sp_list_a, sp_list_b] = find(tril_connect ~= 0);
     for iPair = 1:size(sp_list_a, 1)
-        id_seg_a = getMostOverlapSegment((subSPMap1==sp_list_a(iPair)), gt_frame1);
-        id_seg_b = getMostOverlapSegment((subSPMap2==sp_list_b(iPair)), gt_frame2);
+        [id_seg_a, id_hostseg_a] = getMostOverlapSegment((subSPMap1==sp_list_a(iPair)), gt_frame1);
+        [id_seg_b, id_hostseg_b] = getMostOverlapSegment((subSPMap2==sp_list_b(iPair)), gt_frame2);
         
         added_sample = [sub_sta_sim(sp_list_a(iPair), sp_list_b(iPair));...
                         sub_sta_hist(sp_list_a(iPair), sp_list_b(iPair));...
                         sub_stm_sim(sp_list_a(iPair), sp_list_b(iPair));...
                         sub_stm_hist(sp_list_a(iPair), sp_list_b(iPair))];
         if (id_seg_a == id_seg_b)
-            pos_samples_inter = [pos_samples_inter added_sample];
-        else
-            neg_samples_inter = [neg_samples_inter added_sample];
+            pos_samples_inter = [pos_samples_inter full(added_sample)];
+        elseif (id_hostseg_a ~= id_hostseg_b)
+            neg_samples_inter = [neg_samples_inter full(added_sample)];
         end
     end
 end
 
 
 % Write to result file
-if (video_path(end) == '/')
-    video_path(end) = [];
-end
-[~,video_name,~] =fileparts(video_path);
+%pos_samples_intra = full(pos_samples_intra);
+
 save(fullfile(res_dir, [video_name '.mat']),...
     'pos_samples_intra', 'neg_samples_intra', 'pos_samples_inter', 'neg_samples_inter');
 
 end
 
-function segment_id = getMostOverlapSegment(superpixel_mask, gt_frame)
+function [segment_id, host_segment_id] = getMostOverlapSegment(superpixel_mask, gt_frame)
 
 % Param
 area_ratio_threshold = 0.6;
@@ -190,6 +193,7 @@ sp_area = sum(superpixel_mask(:));
 if (max_seg_area/sp_area > area_ratio_threshold)
     segment_id = max_seg_id;
 end
+host_segment_id = max_seg_id;
 
 end
 

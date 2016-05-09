@@ -15,9 +15,9 @@ for iSubGraph = 1:length(intragraph)
     [median_list1, histogram_list1] = getLabInformation (spmap{iSubGraph}, frames(:,:,:,iSubGraph));
     [lab_sim_graph, hist_sim_graph] = spatio_temporal_appearance_intraframe...
                 ([sp_list_a, sp_list_b], median_list1, median_list1, histogram_list1, histogram_list1,...
-                iSubGraph, iSubGraph, global_spid_map);
-	graph = graph + lab_sim_graph;
-    graph = graph + hist_sim_graph;
+                size(tril_connect1));
+	%graph = graph + lab_sim_graph;
+    %graph = graph + hist_sim_graph;
     
     if (nargout > 1)
         feature_intra_sim(iSubGraph, 1) = {lab_sim_graph};
@@ -33,11 +33,11 @@ for iSubGraph = 1:length(intergraph)
     [median_list2, histogram_list2] = getLabInformation (spmap{iSubGraph+1}, frames(:,:,:,iSubGraph+1));
     [lab_sim_graph, hist_sim_graph] = spatio_temporal_appearance_intraframe...
                 ([sp_list_a, sp_list_b], median_list1, median_list2, histogram_list1, histogram_list2,...
-                iSubGraph, (iSubGraph+1), global_spid_map);
+                size(tril_connect));
             
             
-	graph = graph + lab_sim_graph;
-    graph = graph + hist_sim_graph;
+	%graph = graph + lab_sim_graph;
+    %graph = graph + hist_sim_graph;
     
     if (nargout > 1)
         feature_inter_sim(iSubGraph, 1) = {lab_sim_graph};
