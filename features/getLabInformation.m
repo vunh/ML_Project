@@ -10,7 +10,7 @@ nbinsB = option.nbinsB;
 % a_range = [-127, 128];
 % b_range = [-127, 128];
 
-lab_img = rgb2hsv(lab2rgb(lab_img));
+%lab_img = rgb2hsv(lab2rgb(lab_img));
 L_range = option.L_range;
 a_range = option.a_range;
 b_range = option.b_range;

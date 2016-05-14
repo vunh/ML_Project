@@ -157,7 +157,7 @@ files = dir(fullfile(video_dir, ['*' ext]));
 files = {files.name};
 for i = 1:length(files)
     frame_path = fullfile(video_dir, files{i});
-    frames(:,:,:,i) = rgb2lab(imread(frame_path));
+    frames(:,:,:,i) = rgb2hsv(imread(frame_path));
 end
 
 end
