@@ -3,6 +3,34 @@ function createTrainingData_FromVideo(video_name)
 % Param
 groundTruth_level = 4;
 
+option_aba.g = 0.08;
+
+option_sta.nbinsL = 16;
+option_sta.nbinsA = 4;
+option_sta.nbinsB = 4;
+option_sta.L_range = [0, 1.01];
+option_sta.a_range = [0, 1.01];
+option_sta.b_range = [0, 1.01];
+option_sta.lambda_sta = 40;
+option_sta.lambda_sta_2 = 70;
+%option_sta.g1 = 1;
+%option_sta.g2 = 0.5;
+option_sta.lambda_inter_sta = 40;
+option_sta.lambda_inter_sta_2 = 70;
+
+option_stm.nbins = 20;
+option_stm.motion_range = [-10, 10];
+%option_stm.lambda_sta = 20;
+option_stm.lambda_sta = 10;
+option_stm.lambda_sta_2 = 50;
+%option_stm.g1 = 1;
+%option_stm.g1 = 4;
+%option_stm.g2 = 0.5;
+option_stm.lambda_inter_sta = 40;
+option_stm.lambda_inter_sta_2 = 70;
+
+
+
 addpath(genpath('../'));
 
 % Directories
@@ -81,11 +109,11 @@ feature_file = fullfile(working_dir, sprintf('feature_%s.mat', video_name));
 if (exist(feature_file, 'file') == 2)
     load(feature_file);
 else
-[gr_aba, aff_aba] = addFeature_AccrossBoundaryAppearance (spmap, ucm, global_spid_map, graph, intra_graph);
+[gr_aba, aff_aba] = addFeature_AccrossBoundaryAppearance (spmap, ucm, global_spid_map, graph, intra_graph, option_aba);
 [sta_graph, sta_feature_intra_sim, sta_feature_intra_hist, sta_feature_inter_sim, sta_feature_inter_hist] = addFeature_SpatioTemporalAppearance ...
-    (frames, spmap, global_spid_map, graph, intra_graph, inter_graph);
+    (frames, spmap, global_spid_map, graph, intra_graph, inter_graph, option_sta);
 [stm_graph, stm_feature_intra_sim, stm_feature_intra_hist, stm_feature_inter_sim, stm_feature_inter_hist] = addFeature_SpatioTemporalMotion ...
-    (spmap, global_spid_map, graph, intra_graph, inter_graph, op_flow);
+    (spmap, global_spid_map, graph, intra_graph, inter_graph, op_flow, option_stm);
 save(feature_file, 'aff_aba', 'sta_feature_intra_sim', 'sta_feature_intra_hist', 'sta_feature_inter_sim', 'sta_feature_inter_hist',...
     'stm_feature_intra_sim', 'stm_feature_intra_hist', 'stm_feature_inter_sim', 'stm_feature_inter_hist');
 end
@@ -139,7 +167,8 @@ for iSubGraph = 1:(length(inter_graph)-1)
     sub_stm_hist = stm_feature_inter_hist{iSubGraph};
     
     
-    tril_connect = tril(inter_graph{iSubGraph});
+    %tril_connect = tril(inter_graph{iSubGraph});
+    tril_connect = inter_graph{iSubGraph};
     [sp_list_a, sp_list_b] = find(tril_connect ~= 0);
     for iPair = 1:size(sp_list_a, 1)
         [id_seg_a, id_hostseg_a] = getMostOverlapSegment((subSPMap1==sp_list_a(iPair)), gt_frame1);

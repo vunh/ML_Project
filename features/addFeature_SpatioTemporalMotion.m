@@ -32,7 +32,8 @@ for iSubGraph = 1:1  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %for iSubGraph = 1:(length(intergraph) - 1)
     subOpticalFlow1 = op_flow(iSubGraph);
     subOpticalFlow2 = op_flow(iSubGraph + 1);
-    tril_connect = tril(intergraph{iSubGraph});
+    %tril_connect = tril(intergraph{iSubGraph});
+    tril_connect = intergraph{iSubGraph};
     [sp_list_a, sp_list_b] = find(tril_connect ~= 0);
     [median_list1, histogram_list1] = getMotionInformation (spmap{iSubGraph}, subOpticalFlow1,option);
     [median_list2, histogram_list2] = getMotionInformation (spmap{iSubGraph+1}, subOpticalFlow2,option);

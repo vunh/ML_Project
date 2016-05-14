@@ -29,7 +29,8 @@ end
 
 for iSubGraph = 1:1         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %for iSubGraph = 1:length(intergraph)
-    tril_connect = tril(intergraph{iSubGraph});
+    %tril_connect = tril(intergraph{iSubGraph});
+    tril_connect = intergraph{iSubGraph};
     [sp_list_a, sp_list_b] = find(tril_connect ~= 0);
     [median_list1, histogram_list1] = getLabInformation (spmap{iSubGraph}, frames(:,:,:,iSubGraph),option);
     [median_list2, histogram_list2] = getLabInformation (spmap{iSubGraph+1}, frames(:,:,:,iSubGraph+1),option);

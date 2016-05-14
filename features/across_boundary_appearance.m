@@ -5,7 +5,11 @@
 function sim = across_boundary_appearance(spmap, edgemap,option)
 
 % Param
-g = option.g;
+if (nargin > 2)
+    g = option.g;
+else
+    g = 0.08;
+end
 %g = 1;
 
 aff = spAffinities(spmap, edgemap);

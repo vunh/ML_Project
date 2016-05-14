@@ -5,6 +5,8 @@
 
 function [intra_graph, inter_graph] = graph_topo (sp_map, global_spid_map, op_flow)
 
+
+
 n_global_sp = max(global_spid_map(:));
 n_frame = length(sp_map);
 
@@ -61,7 +63,7 @@ for iFrame = 1:(length(sp_map)-1)
         idx = find(spmap1(:) == iSp);
         u_list = u_of(idx);
         v_list = v_of(idx);
-        flow = [median(u_list) median(v_list)];
+        flow = [median(v_list) median(u_list)];
         
         % Move the mask of the superpixel 1 to the next frame
         mask1 = (spmap1 == iSp);
