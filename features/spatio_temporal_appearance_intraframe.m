@@ -7,8 +7,8 @@ function [lab_sim_graph, hist_sim_graph] = spatio_temporal_appearance_intraframe
 % Params
 lambda_sta = option.lambda_sta;
 lambda_sta_2 = option.lambda_sta_2;
-g1 = option.g1;
-g2 = option.g2;
+%g1 = option.g1;
+%g2 = option.g2;
 
 lab_sim_graph = sparse(sim_matrix_size(1,1), sim_matrix_size(1,2));
 hist_sim_graph = sparse(sim_matrix_size(1,1), sim_matrix_size(1,2));
@@ -21,11 +21,12 @@ for iPair = 1:length(sp_pairs)
     %sp2 = global_spid_map(frameID2, sp2);
     % Median
     dist_lab = exp(-lambda_sta * norm(median_list1(sp1, :) - median_list2(sp2, :)));
-    lab_sim_graph(sp1, sp2) = exp(-dist_lab/g1);
+    %lab_sim_graph(sp1, sp2) = exp(-dist_lab/g1);
+    lab_sim_graph(sp1, sp2) = dist_lab;
     lab_sim_graph(sp2, sp1) = lab_sim_graph(sp1, sp2);
     
     % Histogram
-    dist_hist = exp(-lambda_sta_2*computingChi2Dist(histogram_list1(sp1, :), histogram_list2(sp2, :))/g2);
+    dist_hist = exp(-lambda_sta_2*computingChi2Dist(histogram_list1(sp1, :), histogram_list2(sp2, :)));
     hist_sim_graph(sp1, sp2) = dist_hist;
     hist_sim_graph(sp2, sp1) = hist_sim_graph(sp1, sp2);
 end
