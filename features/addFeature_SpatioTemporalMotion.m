@@ -8,10 +8,11 @@ feature_inter_sim = cell(length(intergraph), 1);
 feature_intra_hist = cell(length(intragraph), 1);
 feature_inter_hist = cell(length(intergraph), 1);
 
-for iSubGraph = 1:1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%for iSubGraph = 1:(length(intragraph) - 1)
+%for iSubGraph = 1:1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for iSubGraph = 1:(length(intragraph) - 1)
     subOpticalFlow = op_flow(iSubGraph);
-    tril_connect1 = tril(intragraph{iSubGraph});
+    %tril_connect1 = tril(intragraph{iSubGraph});
+    tril_connect1 = intragraph{iSubGraph};
     [sp_list_a, sp_list_b] = find(tril_connect1 ~= 0);
     % Compute median and histogram of superpixels
     [median_list1, histogram_list1] = getMotionInformation (spmap{iSubGraph}, subOpticalFlow,option);
@@ -28,8 +29,8 @@ for iSubGraph = 1:1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
 end
 
-for iSubGraph = 1:1  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%for iSubGraph = 1:(length(intergraph) - 1)
+%for iSubGraph = 1:1  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for iSubGraph = 1:(length(intergraph) - 1)
     subOpticalFlow1 = op_flow(iSubGraph);
     subOpticalFlow2 = op_flow(iSubGraph + 1);
     %tril_connect = tril(intergraph{iSubGraph});

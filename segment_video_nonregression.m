@@ -2,6 +2,33 @@ function segment_video_nonregression(id)
 
 % Config
 nbCluster = 500;
+option_aba.g = 0.08;
+
+option_sta.nbinsL = 16;
+option_sta.nbinsA = 4;
+option_sta.nbinsB = 4;
+option_sta.L_range = [0, 1.01];
+option_sta.a_range = [0, 1.01];
+option_sta.b_range = [0, 1.01];
+option_sta.lambda_sta = 40;
+option_sta.lambda_sta_2 = 70;
+%option_sta.g1 = 1;
+%option_sta.g2 = 0.5;
+
+%option_stm.nbins = 20;
+%option_stm.motion_range = [-10, 10];
+%option_stm.lambda_sta = 20;
+option_stm.lambda_sta = 20;
+option_stm.lambda_sta_2 = 50;
+%option_stm.g1 = 1;
+%option_stm.g1 = 4;
+%option_stm.g2 = 0.5;
+option_stm.nbins_ang = 8;
+option_stm.nbins_mag = 10;
+option_stm.angle_range = [-pi, pi];
+option_stm.magnitude_range = [0, 10];
+
+
 
 addpath(genpath(pwd));
 addpath(genpath('/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/Ncut_9'));
@@ -84,11 +111,11 @@ if (exist(feature_file, 'file') == 2)
     load (feature_file);
 else
     disp('\nExtracting features');
-    [gr_aba, aff_aba] = addFeature_AccrossBoundaryAppearance (spmap, ucm, global_spid_map, graph, intra_graph);
+    [gr_aba, aff_aba] = addFeature_AccrossBoundaryAppearance (spmap, ucm, global_spid_map, graph, intra_graph, option_aba);
     [sta_graph, sta_feature_intra_sim, sta_feature_intra_hist, sta_feature_inter_sim, sta_feature_inter_hist] = addFeature_SpatioTemporalAppearance ...
-        (frames, spmap, global_spid_map, graph, intra_graph, inter_graph);
+        (frames, spmap, global_spid_map, graph, intra_graph, inter_graph, option_sta);
     [stm_graph, stm_feature_intra_sim, stm_feature_intra_hist, stm_feature_inter_sim, stm_feature_inter_hist] = addFeature_SpatioTemporalMotion ...
-        (spmap, global_spid_map, graph, intra_graph, inter_graph, op_flow);
+        (spmap, global_spid_map, graph, intra_graph, inter_graph, op_flow, option_stm);
     save(feature_file, 'aff_aba', 'sta_feature_intra_sim', 'sta_feature_intra_hist', 'sta_feature_inter_sim', 'sta_feature_inter_hist',...
         'stm_feature_intra_sim', 'stm_feature_intra_hist', 'stm_feature_inter_sim', 'stm_feature_inter_hist');
 end
@@ -143,7 +170,7 @@ for iSP = 1:n_sp
     segments(:,:,frameID) = segments(:,:,frameID) + sub_seg;
 end
 
-result_path = fullfile(result_dir, ['seg_' video_name '_nonregression.mat']);
+result_path = fullfile(result_dir, ['seg_' video_name '.mat']);
 save(result_path, 'segments');
 a = 3;
 
@@ -157,7 +184,7 @@ files = dir(fullfile(video_dir, ['*' ext]));
 files = {files.name};
 for i = 1:length(files)
     frame_path = fullfile(video_dir, files{i});
-    frames(:,:,:,i) = rgb2lab(imread(frame_path));
+    frames(:,:,:,i) = rgb2hsv(imread(frame_path));
 end
 
 end

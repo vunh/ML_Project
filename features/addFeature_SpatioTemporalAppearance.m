@@ -8,9 +8,10 @@ feature_inter_sim = cell(length(intergraph), 1);
 feature_intra_hist = cell(length(intragraph), 1);
 feature_inter_hist = cell(length(intergraph), 1);
 
-for iSubGraph = 1:1         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%for iSubGraph = 1:length(intragraph)
-    tril_connect1 = tril(intragraph{iSubGraph});
+%for iSubGraph = 1:1         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for iSubGraph = 1:length(intragraph)
+    %tril_connect1 = tril(intragraph{iSubGraph});
+    tril_connect1 = intragraph{iSubGraph};
     [sp_list_a, sp_list_b] = find(tril_connect1 ~= 0);
     % Compute median and histogram of superpixels
     [median_list1, histogram_list1] = getLabInformation (spmap{iSubGraph}, frames(:,:,:,iSubGraph),option);
@@ -27,8 +28,8 @@ for iSubGraph = 1:1         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 end
 
-for iSubGraph = 1:1         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%for iSubGraph = 1:length(intergraph)
+%for iSubGraph = 1:1         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for iSubGraph = 1:length(intergraph)
     %tril_connect = tril(intergraph{iSubGraph});
     tril_connect = intergraph{iSubGraph};
     [sp_list_a, sp_list_b] = find(tril_connect ~= 0);
