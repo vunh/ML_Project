@@ -1,19 +1,19 @@
 % This function is for computing medians and Lab histograms of superpixels
 % in an image
 
-function [median_list, histogram_list] = getLabInformation (spmap, lab_img)
+function [median_list, histogram_list] = getLabInformation (spmap, lab_img, option)
 
-nbinsL = 16;
-nbinsA = 4;
-nbinsB = 4;
+nbinsL = option.nbinsL;
+nbinsA = option.nbinsA;
+nbinsB = option.nbinsB;
 % L_range = [0, 100];
 % a_range = [-127, 128];
 % b_range = [-127, 128];
 
 lab_img = rgb2hsv(lab2rgb(lab_img));
-L_range = [0, 1.01];
-a_range = [0, 1.01];
-b_range = [0, 1.01];
+L_range = option.L_range;
+a_range = option.a_range;
+b_range = option.b_range;
 
 bin_L = L_range(1):(L_range(2)-L_range(1))/nbinsL:L_range(2);
 bin_a = a_range(1):(a_range(2)-a_range(1))/nbinsA:a_range(2);

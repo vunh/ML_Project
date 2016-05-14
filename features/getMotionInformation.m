@@ -1,10 +1,10 @@
 % This function is for computing medians and motion histograms of superpixels
 % in an image
 
-function [median_list, histogram_list] = getMotionInformation (spmap, opticalflow)
+function [median_list, histogram_list] = getMotionInformation (spmap, opticalflow, option)
 
-nbins = 20;
-motion_range = [-10, 10];
+nbins = option.nbins;
+motion_range = option.motion_range;
 bin_motion = motion_range(1):(motion_range(2)-motion_range(1))/nbins:motion_range(2);
 
 max_sp_ids = length(unique(spmap));

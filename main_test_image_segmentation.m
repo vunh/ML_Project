@@ -1,5 +1,25 @@
 function main_test_image_segmentation()
 
+option_aba.g = 0.08;
+
+option_sta.nbinsL = 16;
+option_sta.nbinsA = 4;
+option_sta.nbinsB = 4;
+option_sta.L_range = [0, 1.01];
+option_sta.a_range = [0, 1.01];
+option_sta.b_range = [0, 1.01];
+option_sta.lambda_sta = 20;
+option_sta.lambda_sta_2 = 10;
+option_sta.g1 = 1;
+option_sta.g2 = 0.5;
+
+option_stm.nbins = 20;
+option_stm.motion_range = [-10, 10];
+option_stm.lambda_sta = 20;
+option_stm.lambda_sta_2 = 10;
+option_stm.g1 = 1;
+option_stm.g2 = 0.5;
+
 addpath(genpath(pwd));
 addpath(genpath('/Users/vunh/Documents/SBU/CourseWork/CSE512 - Machine Learning/Project/code/Ncut_9'));
 
@@ -23,11 +43,11 @@ single_aff_aba = across_boundary_appearance(uint16(superpixel_map), edge_map);
 % Load topology
 
 
-[gr_aba, aff_aba] = addFeature_AccrossBoundaryAppearance ({sp.spmap}, {sp.edge}, 0, graph, intra_graph);
+[gr_aba, aff_aba] = addFeature_AccrossBoundaryAppearance ({sp.spmap}, {sp.edge}, 0, graph, intra_graph, option_aba);
 [sta_graph, sta_feature_intra_sim, sta_feature_intra_hist, sta_feature_inter_sim, sta_feature_inter_hist] = addFeature_SpatioTemporalAppearance ...
-    (frames, {sp.spmap}, 0, graph, intra_graph, inter_graph);
-%[stm_graph, stm_feature_intra_sim, stm_feature_intra_hist, stm_feature_inter_sim, stm_feature_inter_hist] = addFeature_SpatioTemporalMotion ...
-%        ({sp.spmap}, 0, graph, intra_graph, inter_graph, op_flow);
+    (frames, {sp.spmap}, 0, graph, intra_graph, inter_graph, option_sta);
+[stm_graph, stm_feature_intra_sim, stm_feature_intra_hist, stm_feature_inter_sim, stm_feature_inter_hist] = addFeature_SpatioTemporalMotion ...
+        ({sp.spmap}, 0, graph, intra_graph, inter_graph, op_flow, option_stm);
 
 % Partition
 %final_graph = 10*aff_aba{20} + sta_feature_intra_sim{20} + sta_feature_intra_hist{20};

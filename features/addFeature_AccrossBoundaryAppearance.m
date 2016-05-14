@@ -1,4 +1,4 @@
-function [graph, feature_aba] = addFeature_AccrossBoundaryAppearance (spmap, ucmmap, global_spid_map, input_graph, intragraph)
+function [graph, feature_aba] = addFeature_AccrossBoundaryAppearance (spmap, ucmmap, global_spid_map, input_graph, intragraph,option)
 
 graph = sparse(size(input_graph, 1), size(input_graph, 1));
 feature_aba = cell(length(intragraph), 1);
@@ -6,7 +6,7 @@ feature_aba = cell(length(intragraph), 1);
 for iSubGraph = 1:length(intragraph)
     subspmap = spmap{iSubGraph};
     subucmmap = ucmmap{iSubGraph};
-    aff_aba = across_boundary_appearance(uint16(subspmap), subucmmap);
+    aff_aba = across_boundary_appearance(uint16(subspmap), subucmmap, option);
     
 %     for i = 1:size(subspmap, 1)
 %         for j = 1:size(subspmap, 1)

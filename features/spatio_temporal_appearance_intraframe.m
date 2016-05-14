@@ -2,13 +2,13 @@
 % between superpixels with an image
 
 function [lab_sim_graph, hist_sim_graph] = spatio_temporal_appearance_intraframe...
-                (sp_pairs, median_list1, median_list2, histogram_list1, histogram_list2, sim_matrix_size)
+                (sp_pairs, median_list1, median_list2, histogram_list1, histogram_list2, sim_matrix_size,option)
 
 % Params
-lambda_sta = 20;
-lambda_sta_2 = 10;
-g1 = 1;
-g2 = 0.5;
+lambda_sta = option.lambda_sta;
+lambda_sta_2 = option.lambda_sta_2;
+g1 = option.g1;
+g2 = option.g2;
 
 lab_sim_graph = sparse(sim_matrix_size(1,1), sim_matrix_size(1,2));
 hist_sim_graph = sparse(sim_matrix_size(1,1), sim_matrix_size(1,2));

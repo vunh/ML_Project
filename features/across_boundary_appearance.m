@@ -2,10 +2,10 @@
 % superpixels in the same frame
 % Should put contour map for edgemap input
 
-function sim = across_boundary_appearance(spmap, edgemap)
+function sim = across_boundary_appearance(spmap, edgemap,option)
 
 % Param
-g = 0.08;
+g = option.g;
 %g = 1;
 
 aff = spAffinities(spmap, edgemap);
