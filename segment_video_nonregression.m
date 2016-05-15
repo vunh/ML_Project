@@ -1,8 +1,8 @@
 function segment_video_nonregression(id)
 
 % Config
-nbCluster = 500;
-option_aba.g = 0.08;
+nbCluster = 1000;
+option_aba.g = 2;
 
 option_sta.nbinsL = 16;
 option_sta.nbinsA = 4;
@@ -10,15 +10,15 @@ option_sta.nbinsB = 4;
 option_sta.L_range = [0, 1.01];
 option_sta.a_range = [0, 1.01];
 option_sta.b_range = [0, 1.01];
-option_sta.lambda_sta = 40;
-option_sta.lambda_sta_2 = 70;
+option_sta.lambda_sta = 0.03;
+option_sta.lambda_sta_2 = 200;
 %option_sta.g1 = 1;
 %option_sta.g2 = 0.5;
 
 %option_stm.nbins = 20;
 %option_stm.motion_range = [-10, 10];
 %option_stm.lambda_sta = 20;
-option_stm.lambda_sta = 20;
+option_stm.lambda_sta = 28;
 option_stm.lambda_sta_2 = 50;
 %option_stm.g1 = 1;
 %option_stm.g1 = 4;
@@ -133,7 +133,8 @@ for iSubGraph = 1:(length(intra_graph)-1)
     sub_stm_hist = stm_feature_intra_hist{iSubGraph};
     set_of_features = [{sub_aba}, {sub_sta_sim}, {sub_sta_hist}, {sub_stm_sim}, {sub_stm_hist}];
     sub_graph = buildGraph(set_of_features, SVR_intra, iSubGraph, iSubGraph, global_spid_map);
-    graph = graph + sub_graph;
+    
+    graph = Getcombinedsimilaritieswithmethod(graph,sub_graph);
 end
 
 for iSubGraph = 1:(length(inter_graph)-1)
@@ -144,7 +145,8 @@ for iSubGraph = 1:(length(inter_graph)-1)
     sub_stm_hist = stm_feature_inter_hist{iSubGraph};
     set_of_features = [{sub_sta_sim}, {sub_sta_hist}, {sub_stm_sim}, {sub_stm_hist}];
     sub_graph = buildGraph(set_of_features, SVR_inter, iSubGraph, iSubGraph+1, global_spid_map);
-    graph = graph + sub_graph;
+    %graph = graph + sub_graph;
+    graph = Getcombinedsimilaritieswithmethod(graph,sub_graph);
 end
 
 a = 3;
@@ -170,7 +172,7 @@ for iSP = 1:n_sp
     segments(:,:,frameID) = segments(:,:,frameID) + sub_seg;
 end
 
-result_path = fullfile(result_dir, ['seg_' video_name '.mat']);
+result_path = fullfile(result_dir, ['seg_' video_name '_nonregression.mat']);
 save(result_path, 'segments');
 a = 3;
 

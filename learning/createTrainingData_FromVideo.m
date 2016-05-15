@@ -18,16 +18,18 @@ option_sta.lambda_sta_2 = 70;
 option_sta.lambda_inter_sta = 40;
 option_sta.lambda_inter_sta_2 = 70;
 
-option_stm.nbins = 20;
-option_stm.motion_range = [-10, 10];
+%option_stm.nbins = 20;
+%option_stm.motion_range = [-10, 10];
 %option_stm.lambda_sta = 20;
-option_stm.lambda_sta = 10;
+option_stm.lambda_sta = 20;
 option_stm.lambda_sta_2 = 50;
 %option_stm.g1 = 1;
 %option_stm.g1 = 4;
 %option_stm.g2 = 0.5;
-option_stm.lambda_inter_sta = 40;
-option_stm.lambda_inter_sta_2 = 70;
+option_stm.nbins_ang = 8;
+option_stm.nbins_mag = 10;
+option_stm.angle_range = [-pi, pi];
+option_stm.magnitude_range = [0, 10];
 
 
 
@@ -57,7 +59,7 @@ segment_gt = loadGroundTruth (anno_path, groundTruth_level);
 frames = loadLabFrame (video_path, '.jpg');
 sp = load(superpixel_path);  sp = sp.sp;
 spmap = {sp.spmap};
-ucm = {sp.ucm};
+ucm = {sp.edge};
 op_flow = load(opticalflow_path); op_flow = op_flow.o_flow;
 
 
@@ -124,6 +126,8 @@ end
 % information
 
 for iSubGraph = 1:(length(intra_graph)-1)
+    
+    
     subSPMap = spmap{iSubGraph};
     gt_frame = segment_gt(:,:,iSubGraph);
     

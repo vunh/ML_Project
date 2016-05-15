@@ -1,8 +1,8 @@
 function segment_video(id)
 
 % Config
-nbCluster = 500;
-option_aba.g = 0.08;
+nbCluster = 1000;
+option_aba.g = 2;
 
 option_sta.nbinsL = 16;
 option_sta.nbinsA = 4;
@@ -10,15 +10,15 @@ option_sta.nbinsB = 4;
 option_sta.L_range = [0, 1.01];
 option_sta.a_range = [0, 1.01];
 option_sta.b_range = [0, 1.01];
-option_sta.lambda_sta = 40;
-option_sta.lambda_sta_2 = 70;
+option_sta.lambda_sta = 0.03;
+option_sta.lambda_sta_2 = 200;
 %option_sta.g1 = 1;
 %option_sta.g2 = 0.5;
 
 %option_stm.nbins = 20;
 %option_stm.motion_range = [-10, 10];
 %option_stm.lambda_sta = 20;
-option_stm.lambda_sta = 20;
+option_stm.lambda_sta = 28;
 option_stm.lambda_sta_2 = 50;
 %option_stm.g1 = 1;
 %option_stm.g1 = 4;

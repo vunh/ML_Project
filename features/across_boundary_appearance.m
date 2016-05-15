@@ -14,6 +14,7 @@ end
 
 aff = spAffinities(spmap, edgemap);
 
-sim = exp(-aff/g);
+sim = exp(-aff*g);
+%sim = aff;
 
 end
